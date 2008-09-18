@@ -1,0 +1,218 @@
+======================
+ NewsID specification
+======================
+
+(Note: NewsID is provisional name - if we think of anything better
+I'll be doing a search&replace - BenC ;-)
+
+NewsID is a set of conventions for adding semantic information to
+news articles on web pages, for any pretty fuzzy and wide definition
+of "news articles" you want to use.
+
+It is built on top of the hAtom microformat (see
+http://microformats.org/wiki/hatom). While hAtom is primarily intended for
+adding syndication features to standard HTML pages, it also provides
+useful conventions for most of the data NewsID intends to provide.
+
+So NewsID extends hAtom by adding extra fields. A NewsID entry is always
+a valid hAtom entry, but the converse is not necessarily true.
+
+This document will try to avoid repeating the hAtom specification as much
+as possible.
+
+Some basic familiarity with the concepts behind microformats is assumed.
+
+
+Integrated NewsID versus Embedded blocks
+----------------------------------------
+
+Ideally, news articles would use NewsID to provide semantic markup of the
+whole article - headline, byline, content etc...
+
+However, in many cases this may not be practical. Organisations may not
+be willing to make such intrusive changes to their existing HTML, or legacy
+CMS software might make it impractial.
+
+In such cases, one option is to embed the NewsID data as a separate block
+somewhere in the HTML. This would necessitate the replication of
+information already on the page, but is an easy way to provide conformant
+NewsID data with minimal impact upon existing systems and practices.
+
+
+In General
+----------
+
+NewsID uses lower case class names. Hyphens are used to increase
+readability.
+
+By default, the human visible text contents of an element for a property
+represents the value of that property.
+
+If an <abbr> element is used for a property, then the 'title' attribute
+of the <abbr> element is the value of the property, instead of the contents
+of the element, which instead provide a human presentable version of the
+value.
+
+
+Root Class Name
+---------------
+
+The root class name for a NewsID identifier shall contain "newsid hentry".
+The "hentry" denotes a single entry in an hAtom feed. The "newsid"
+indicates that the entry may contain fields specific to NewsID.
+
+
+NewsID specific fields
+----------------------
+
+These fields are NewsID-specific additions to those already defined by
+the hAtom microformat.
+
+code-of-practice
+  Optional. The code of practice the article is written under.
+  It should be a link. The URL should point to a page defining
+  the code of practice and the contents of the element provide its name.
+  For example::
+
+    <a class="code-of-practice" href="http://www.pcc.org.uk/cop/practice.html">PCC Code of Practice</a>
+
+  *TODO: better way? Would a rel="..." be more appropriate?*
+
+editor
+  Optional
+  *TODO: can probably do this with an author entry with a special role...*
+
+history
+ Optional
+ *TODO: add details here... xoxo goodness!*
+
+commissioned-by
+  Optional
+  The organisation which commissioned the piece, using hCard.
+  *TODO: hCard _can_ do organisations without a person, right?*
+
+
+
+hAtom fields
+------------
+
+This is a quick list of the fields already specified by hAtom, with a few
+notes on NewsID-specific details where appropriate.
+See the full hAtom spec for more information.
+
+bookmark
+  (permalink) optional. Uses the rel-bookmark pattern.
+  The URL of the article. If this is not present, the URL used to access
+  the page should be assumed.
+
+  Many sites allow a story to be accessed via multiple URLs. For example,
+  the same story might appear in multiple sections of a newspaper. In these
+  cases a single, canonical URL *must* be specified.
+
+  The url serves two purposes:
+  * it is a globally unique identifier, which databases may use to index
+    and track the article.
+  * it provides a path to get to the original article if you have its
+    NewsID information.
+
+entry-title
+  required. Text.
+
+entry-content
+  optional (see hAtom spec for details)
+
+entry-summary
+  optional. Text.
+
+updated
+  required. Uses datetime-design-pattern.
+
+published
+  optional. Uses datetime-design-pattern.
+
+author
+  required. Uses hCard.
+  Where applicable, the geo-tagging features of hCard should be used to
+  provide location information about authors.
+  For news articles, it's highly desirable that author hCards should
+  include an email address, to provide a channel for readers to reply.
+  *TODO: is that too preachy for a tech spec? Are papers likely to bristle
+  at being told they should provide a right to reply? (BenC)*
+
+tags
+  optional
+  keywords or phrases, using rel-tag.
+  *TODO: not sure if this will cover what we need - it might not fit it
+  with some newspapers existing tag system, but I'm not convinced that
+  their tags are all that usful anyway.... (BenC)* 
+
+
+
+
+Other issues regarding article URLs
+-----------------------------------
+
+There are a number of real-world cases where the URL of published articles
+are not consistant. This is bad, because third party databases might have
+indexed an article using one URL, and then see the same article published
+under a new URL, thus creating duplicate entries.
+
+* Some newspaper sites publish new revisions of articles by removing the
+  old article and creating a whole new one, with a whole new url.
+
+* If a news site moves to a new CMS, the URL scheme is likely to change.
+  If they are wise they leave redirects in place to forward old-style
+  requests on to the new article. But the new CMS will probably want to
+  use the new URL in the NewsID block - ie the canonical URL has changed.
+
+* News sites often run multiple CMSs in parallel, each with their own URL
+  format. For example, they might have one CMS for the main newspaper,
+  and another for journalist blogs. Normally this is not an issue, but
+  sometimes articles will be copied from one CMS to the other - a blog
+  entry being used as an article in the printed edition of a newspaper,
+  for example. In this case, the two versions of the article will have
+  different URLs and so external databases will not easily be able to
+  reconcile them.
+
+* TODO: not sure there is any good solution to any of these... (BenC) *
+
+
+Examples
+--------
+
+a fully marked up (but minimal!) article::
+
+  <div class="hentry newsid">
+    <h2 class="entry-title">
+      <a href="http://fredbloggs.com/big-blahs-on-horizon" rel="bookmark">
+        Big Blahs On Horizon
+      </a>
+    </h2>
+    <p>
+      By <span class="author vcard"><a class="url fn n" href="http://fredbloggs.com">Fred Bloggs</a></span>
+      on <abbr class="published" title="2008-09-03T12:52:22+0100">September 3, 2008 at 12:52 pm</abbr>
+    </p>
+    <div class="entry-content">
+      <p>blah blah blah blah blah blah blah blah blah blah</p>
+      <p>blah blah blah blah blah blah blah blah blah blah</p>
+      <p>So there.</p>
+    </div>
+    <p>This article adheres to the <a class="code-of-practice" href="http://fredbloggs.com/cop">The Fred Bloggs Seal of Utmost Integrity (tm)</a></p>
+  </div>
+
+
+a NewsID block for wedging into existing layouts with minimal impact:
+
+  <div class="hentry newsid">
+    title: <span class="entry-title">Big Blahs On Horizon</span><br/>
+    url: <a href="http://fredbloggs.com/big-blahs-on-horizon" rel="bookmark">Big Blahs On Horizon</a><br/>
+    author: <span class="author vcard"><a class="url fn n" href="http://fredbloggs.com">Fred Bloggs</a></span><br/>
+    code of practice: <a class="code-of-practice" href="http://fredbloggs.com/cop">The Fred Bloggs Seal of Utmost Integrity (tm)</a><br/>
+  </div>
+
+*TODO: embedded block should probably be hidden, or replaced with a little
+NewsID logo or soemthing like that. Maybe supply some example CSS too? *
+
+
+
+
