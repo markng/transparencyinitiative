@@ -1,0 +1,26 @@
+rel-cop is a simple, open format for indicating content codes of practice, which is embedable in HTML or XHTML, Atom, RSS, and arbitrary XML.
+
+* currently unsure whether cop is a desirable abbreviation (or whether there should be an abbreviation at all)
+
+Abstract
+--------
+
+By adding rel="cop" to a hyperlink, a page indicates that the destination of that hyperlink is a description of the code of practice the content on the page was created under.
+
+<a href="http://www.mediastandardstrust.org/code-of-practice" rel="cop">some code of practice name goes here</a>
+
+XMDP Profile
+------------
+
+<dl class="profile">
+ <dt id="rel">rel</dt>
+ <dd><p>
+   <a rel="help" href="http://www.w3.org/TR/html401/struct/links.html#adef-rel">
+     HTML4 definition of the 'rel' attribute.</a>  
+   Here is an additional value.</p>
+  <dl>
+   <dt id="cop">license</dt>
+   <dd>Indicates that the referred resource is a code of practice for the content on the referring page.</dd>
+  </dl>
+ </dd>
+</dl>

@@ -1,21 +1,20 @@
 ======================
- NewsID specification
+ NewsCredit specification
 ======================
 
-(Note: NewsID is provisional name - if we think of anything better
+(Note: NewsCredit is provisional name - if we think of anything better
 I'll be doing a search&replace - BenC ;-)
 
-NewsID is a set of conventions for adding semantic information to
+NewsCredit is a set of conventions for adding semantic information to
 news articles on web pages, for any pretty fuzzy and wide definition
 of "news articles" you want to use.
 
 It is built on top of the hAtom microformat (see
 http://microformats.org/wiki/hatom). While hAtom is primarily intended for
 adding syndication features to standard HTML pages, it also provides
-useful conventions for most of the data NewsID intends to provide.
+useful conventions for most of the data NewsCredit intends to provide.
 
-So NewsID extends hAtom by adding extra fields. A NewsID entry is always
-a valid hAtom entry, but the converse is not necessarily true.
+So NewsCredit extends hAtom by adding extra fields.  hAtom and NewsCredit should be valid examples of each other.
 
 This document will try to avoid repeating the hAtom specification as much
 as possible.
@@ -23,26 +22,26 @@ as possible.
 Some basic familiarity with the concepts behind microformats is assumed.
 
 
-Integrated NewsID versus Embedded blocks
+Integrated NewsCredit versus Embedded blocks
 ----------------------------------------
 
-Ideally, news articles would use NewsID to provide semantic markup of the
+Ideally, news articles would use NewsCredit to provide semantic markup of the
 whole article - headline, byline, content etc...
 
 However, in many cases this may not be practical. Organisations may not
 be willing to make such intrusive changes to their existing HTML, or legacy
 CMS software might make it impractial.
 
-In such cases, one option is to embed the NewsID data as a separate block
+In such cases, one option is to embed the NewsCredit data as a separate block
 somewhere in the HTML. This would necessitate the replication of
 information already on the page, but is an easy way to provide conformant
-NewsID data with minimal impact upon existing systems and practices.
+NewsCredit data with minimal impact upon existing systems and practices.
 
 
 In General
 ----------
 
-NewsID uses lower case class names. Hyphens are used to increase
+NewsCredit uses lower case class names. Hyphens are used to increase
 readability.
 
 By default, the human visible text contents of an element for a property
@@ -54,50 +53,33 @@ of the element, which instead provide a human presentable version of the
 value.
 
 
-Root Class Name
----------------
-
-The root class name for a NewsID identifier shall contain "newsid hentry".
-The "hentry" denotes a single entry in an hAtom feed. The "newsid"
-indicates that the entry may contain fields specific to NewsID.
-
-
-NewsID specific fields
+NewsCredit specific fields
 ----------------------
 
-These fields are NewsID-specific additions to those already defined by
+These fields are NewsCredit-specific additions to those already defined by
 the hAtom microformat.
 
 code-of-practice
-  Optional. The code of practice the article is written under.
-  It should be a link. The URL should point to a page defining
-  the code of practice and the contents of the element provide its name.
-  For example::
-
-    <a class="code-of-practice" href="http://www.pcc.org.uk/cop/practice.html">PCC Code of Practice</a>
-
-  *TODO: better way? Would a rel="..." be more appropriate?*
-
-editor
-  Optional
-  *TODO: can probably do this with an author entry with a special role...*
+  using rel-cop pattern - see that spec
 
 history
- Optional
- *TODO: add details here... xoxo goodness!*
-
+  Optional. 
+  An hcal list of changes to the document.  Example :
+  <ol class="vcalendar history">
+    <li class="vevent">
+      <span class="summary">Removed spelling mistake</span> at <abbr class="dtstart" title="2008-03-12T08:30:00">8:30am on March 12th 2008</abbr> by <span class="vcard"><a class="url fn" href="http://www.markng.co.uk/">Mark Ng</a> </span>
+    </li>
+  </ol>
+  
 commissioned-by
   Optional
   The organisation which commissioned the piece, using hCard.
-  *TODO: hCard _can_ do organisations without a person, right?*
-
-
 
 hAtom fields
 ------------
 
 This is a quick list of the fields already specified by hAtom, with a few
-notes on NewsID-specific details where appropriate.
+notes on NewsCredit-specific details where appropriate.
 See the full hAtom spec for more information.
 
 bookmark
@@ -113,7 +95,7 @@ bookmark
   * it is a globally unique identifier, which databases may use to index
     and track the article.
   * it provides a path to get to the original article if you have its
-    NewsID information.
+    NewsCredit information.
 
 entry-title
   required. Text.
@@ -134,10 +116,13 @@ author
   required. Uses hCard.
   Where applicable, the geo-tagging features of hCard should be used to
   provide location information about authors.
+  Where there are multiple people involved in the production of an article, you should include others as extra editors.  The role attribute should be used to indicate what role each person played in the production of the article.
+  *TODO: If we're looking to programatically parse this, I'm concerned about i18n here - however, we can't realistically ask specifically for a machine readable version and be very "microformatty" (Mark Ng)*
   For news articles, it's highly desirable that author hCards should
   include an email address, to provide a channel for readers to reply.
   *TODO: is that too preachy for a tech spec? Are papers likely to bristle
   at being told they should provide a right to reply? (BenC)*
+  
 
 tags
   optional
@@ -163,7 +148,7 @@ under a new URL, thus creating duplicate entries.
 * If a news site moves to a new CMS, the URL scheme is likely to change.
   If they are wise they leave redirects in place to forward old-style
   requests on to the new article. But the new CMS will probably want to
-  use the new URL in the NewsID block - ie the canonical URL has changed.
+  use the new URL in the NewsCredit block - ie the canonical URL has changed.
 
 * News sites often run multiple CMSs in parallel, each with their own URL
   format. For example, they might have one CMS for the main newspaper,
@@ -182,7 +167,7 @@ Examples
 
 a fully marked up (but minimal!) article::
 
-  <div class="hentry newsid">
+  <div class="hentry">
     <h2 class="entry-title">
       <a href="http://fredbloggs.com/big-blahs-on-horizon" rel="bookmark">
         Big Blahs On Horizon
@@ -197,13 +182,19 @@ a fully marked up (but minimal!) article::
       <p>blah blah blah blah blah blah blah blah blah blah</p>
       <p>So there.</p>
     </div>
-    <p>This article adheres to the <a class="code-of-practice" href="http://fredbloggs.com/cop">The Fred Bloggs Seal of Utmost Integrity (tm)</a></p>
+    <ol class="vcalendar history">
+      <li class="vevent">
+        <span class="summary">Initial publication</span> at <abbr class="dtstart" title="2008-03-12T08:30:00">8:30am on March 12th 2008</abbr> by <span class="vcard"><a class="url fn" href="http://fredbloggs.com/">Fred Bloggs</a> </span>
+      </li>
+    </ol>
+    
+    <p>This article adheres to the <a rel="cop" href="http://fredbloggs.com/cop">The Fred Bloggs Seal of Utmost Integrity (tm)</a></p>
   </div>
 
 
-a NewsID block for wedging into existing layouts with minimal impact:
+a NewsCredit block for wedging into existing layouts with minimal impact:
 
-  <div class="hentry newsid">
+  <div class="hentry">
     title: <span class="entry-title">Big Blahs On Horizon</span><br/>
     url: <a href="http://fredbloggs.com/big-blahs-on-horizon" rel="bookmark">Big Blahs On Horizon</a><br/>
     author: <span class="author vcard"><a class="url fn n" href="http://fredbloggs.com">Fred Bloggs</a></span><br/>
@@ -211,7 +202,9 @@ a NewsID block for wedging into existing layouts with minimal impact:
   </div>
 
 *TODO: embedded block should probably be hidden, or replaced with a little
-NewsID logo or soemthing like that. Maybe supply some example CSS too? *
+NewsCredit logo or soemthing like that. Maybe supply some example CSS too? *
+
+*Embedded blocks being hidden isn't very microformat like - invisible metadata rots, we need to have a chat about this ?*
 
 
 
